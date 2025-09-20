@@ -1,0 +1,56 @@
+# Flutter & Dart
+# ----------------------------------------------------------------
+.dart_tool/
+.packages
+.pub-cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+generated_plugin_registrant.dart
+.metadata
+
+# IDE & Editor Configuration
+# ----------------------------------------------------------------
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Keystore files
+# ----------------------------------------------------------------
+release-key.jks
+
+# Android
+# Ignore Gradle cache and generated files
+# ----------------------------------------------------------------
+android/.gradle
+android/local.properties
+android/app/build/
+
+android/key.properties
+
+
+# iOS
+# Ignore Pods, Xcode workspace settings, and generated files
+# ----------------------------------------------------------------
+ios/Pods/
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/ephemeral/
+ios/.symlinks/
+*.xcworkspace
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+DerivedData/
+
+# Common Operating System Files
+# ----------------------------------------------------------------
+.DS_Store
+
+# Log and Temporary Files
+# ----------------------------------------------------------------
+*.log
+*.tmp
+*.swp
+*.lock
