@@ -31,8 +31,8 @@ class AppRouter {
         builder: (context, state) => const SignupScreen(),
       ),
       GoRoute(
-        path: '/notes',
-        name: ScreenNames.notes,
+        path: '/home',
+        name: ScreenNames.home,
         builder: (context, state) => const HomeScreen(),
       ),
     ],
@@ -47,7 +47,7 @@ class AppRouter {
       }
       if (authState is Authenticated) {
         if (isAuthRoute || currentLocation == '/splash') {
-          return '/notes';
+          return '/home';
         }
       }
       if (authState is Unauthenticated) {
