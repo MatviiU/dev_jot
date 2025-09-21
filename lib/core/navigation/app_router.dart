@@ -3,7 +3,7 @@ import 'package:dev_jot/features/app/widgets/splash_screen.dart';
 import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_jot/features/auth/presentation/screens/login_screen.dart';
 import 'package:dev_jot/features/auth/presentation/screens/signup_screen.dart';
-import 'package:dev_jot/features/notes/presentation/screens/notes_screen.dart';
+import 'package:dev_jot/features/notes/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -33,7 +33,7 @@ class AppRouter {
       GoRoute(
         path: '/notes',
         name: ScreenNames.notes,
-        builder: (context, state) => const NotesScreen(),
+        builder: (context, state) => const HomeScreen(),
       ),
     ],
     redirect: (context, state) {
