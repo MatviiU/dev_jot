@@ -1,19 +1,65 @@
 import 'package:dev_jot/features/app/screen_names.dart';
+import 'package:dev_jot/features/app/widgets/splash_screen.dart';
+import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_jot/features/auth/presentation/screens/login_screen.dart';
 import 'package:dev_jot/features/auth/presentation/screens/signup_screen.dart';
+import 'package:dev_jot/features/home/presentation/screens/home_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-final router = GoRouter(
-  routes: [
-    GoRoute(
-      path: '/',
-      name: ScreenNames.signIn,
-      builder: (context, state) => const LoginScreen(),
-    ),
-    GoRoute(
-      path: '/sign-up',
-      name: ScreenNames.signUp,
-      builder: (context, state) => const SignupScreen(),
-    ),
-  ],
-);
+class AppRouter {
+  AppRouter({required this.authBloc});
+
+  final AuthBloc authBloc;
+
+  late final router = GoRouter(
+    initialLocation: '/splash',
+    routes: [
+      GoRoute(
+        path: '/splash',
+        name: ScreenNames.splash,
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/login',
+        name: ScreenNames.signIn,
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/sign-up',
+        name: ScreenNames.signUp,
+        builder: (context, state) => const SignupScreen(),
+      ),
+      GoRoute(
+        path: '/home',
+        name: ScreenNames.home,
+        builder: (context, state) => const HomeScreen(),
+      ),
+    ],
+    redirect: (context, state) {
+      final authState = authBloc.state;
+      final currentLocation = state.uri.toString();
+
+      final authRoutes = ['/login', '/sign-up'];
+
+      return switch (authState) {
+        AuthUnknown() => currentLocation == '/splash' ? null : '/splash',
+        Authenticated() =>
+          authRoutes.contains(currentLocation) || currentLocation == '/splash'
+              ? null
+              : '/home',
+        Unauthenticated() =>
+          !authRoutes.contains(currentLocation) ? null : '/login',
+        AuthFailure() => null,
+      };
+    },
+    refreshListenable: GoRouterRefreshStream(authBloc.stream),
+  );
+}
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    stream.asBroadcastStream().listen((_) => notifyListeners());
+  }
+}
