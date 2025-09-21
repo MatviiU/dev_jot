@@ -9,6 +9,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     required this.primary,
     required this.onBackground,
     required this.hintText,
+    required this.onSurface,
   });
 
   final Color? background;
@@ -16,6 +17,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
   final Color? primary;
   final Color? onBackground;
   final Color? hintText;
+  final Color? onSurface;
 
   @override
   ThemeExtension<AppColorsExtension> copyWith({
@@ -24,6 +26,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     Color? primary,
     Color? onBackground,
     Color? hintText,
+    Color? onSurface,
   }) {
     return AppColorsExtension(
       background: background ?? this.background,
@@ -31,6 +34,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       primary: primary ?? this.primary,
       onBackground: onBackground ?? this.onBackground,
       hintText: hintText ?? this.hintText,
+      onSurface: onSurface ?? this.onSurface,
     );
   }
 
@@ -48,6 +52,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       primary: Color.lerp(primary, other.primary, t),
       onBackground: Color.lerp(onBackground, other.onBackground, t),
       hintText: Color.lerp(hintText, other.hintText, t),
+      onSurface: Color.lerp(onSurface, other.onSurface, t),
     );
   }
 }
@@ -58,6 +63,7 @@ const _darkAppColors = AppColorsExtension(
   primary: Color(0xFF00BFFF),
   onBackground: Color(0xFFF5F5F5),
   hintText: Color(0xFF888888),
+  onSurface: Color(0xFFF5F5F5),
 );
 
 final darkTheme = ThemeData(
@@ -66,7 +72,7 @@ final darkTheme = ThemeData(
   colorScheme: ColorScheme.dark(
     surface: _darkAppColors.surface!,
     primary: _darkAppColors.primary!,
-    onSurface: _darkAppColors.onBackground!,
+    onSurface: _darkAppColors.onSurface!,
   ),
 
   textTheme: GoogleFonts.jetBrainsMonoTextTheme(ThemeData.dark().textTheme)
@@ -75,7 +81,13 @@ final darkTheme = ThemeData(
           fontSize: 32,
           fontWeight: FontWeight.bold,
         ),
+        headlineMedium: const TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+        ),
+        titleLarge: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         titleMedium: const TextStyle(fontSize: 16),
+        bodyLarge: const TextStyle(fontSize: 16),
         bodyMedium: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.normal,

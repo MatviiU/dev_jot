@@ -6,14 +6,16 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(),
-          const Gap(height: 8),
-          Text('Loading...', style: Theme.of(context).textTheme.bodyMedium),
-        ],
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(),
+            const Gap(height: 8),
+            Text('Loading...', style: Theme.of(context).textTheme.bodyMedium),
+          ],
+        ),
       ),
     );
   }
