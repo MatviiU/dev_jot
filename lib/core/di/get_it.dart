@@ -12,7 +12,7 @@ void setupDependencies() {
     ..registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(firebaseAuth: getIt<FirebaseAuth>()),
     )
-    ..registerFactory<AuthBloc>(
+    ..registerLazySingleton<AuthBloc>(
       () => AuthBloc(authRepository: getIt<AuthRepository>()),
     );
 }

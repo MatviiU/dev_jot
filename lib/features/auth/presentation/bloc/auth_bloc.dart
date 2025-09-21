@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dev_jot/features/auth/domain/exceptions/auth_exceptions.dart';
+import 'package:dev_jot/features/auth/domain/exceptions/auth_exception.dart';
 import 'package:dev_jot/features/auth/domain/repositories/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,10 +12,10 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required AuthRepository authRepository})
-    : _authRepository = authRepository,
-      super(AuthUnknown()) {
+      : _authRepository = authRepository,
+        super(AuthUnknown()) {
     _userSubscription = _authRepository.authStateChanges.listen(
-      (user) => add(_AuthUserChanged(user)),
+          (user) => add(_AuthUserChanged(user)),
     );
 
     on<_AuthUserChanged>(_onAuthUserChanged);
@@ -36,40 +36,43 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onSignInRequested(
-    SignInRequested event,
-    Emitter<AuthState> emit,
-  ) async {
+      SignInRequested event,
+      Emitter<AuthState> emit,
+      ) async {
+    emit(AuthLoading());
     try {
       await _authRepository.signInWithEmailAndPassword(
         event.email,
         event.password,
       );
-    } on AuthExceptions catch (e) {
+    } on AuthException catch (e) {
       emit(AuthFailure(e.message));
     }
   }
 
   Future<void> _onSignUpRequested(
-    SignUpRequested event,
-    Emitter<AuthState> emit,
-  ) async {
+      SignUpRequested event,
+      Emitter<AuthState> emit,
+      ) async {
+    emit(AuthLoading());
     try {
       await _authRepository.signUpWithEmailAndPassword(
         event.email,
         event.password,
       );
-    } on AuthExceptions catch (e) {
+    } on AuthException catch (e) {
       emit(AuthFailure(e.message));
     }
   }
 
   Future<void> _onSignOutRequested(
-    SignOutRequested event,
-    Emitter<AuthState> emit,
-  ) async {
+      SignOutRequested event,
+      Emitter<AuthState> emit,
+      ) async {
+    emit(AuthLoading());
     try {
       await _authRepository.signOut();
-    } on AuthExceptions catch (e) {
+    } on AuthException catch (e) {
       emit(AuthFailure(e.message));
     }
   }

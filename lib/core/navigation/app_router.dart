@@ -40,18 +40,22 @@ class AppRouter {
       final authState = authBloc.state;
       final currentLocation = state.uri.toString();
 
-      final authRoutes = ['/login', '/sign-up'];
+      final isAuthRoute = ['/login', '/sign-up'].contains(currentLocation);
 
-      return switch (authState) {
-        AuthUnknown() => currentLocation == '/splash' ? null : '/splash',
-        Authenticated() =>
-          authRoutes.contains(currentLocation) || currentLocation == '/splash'
-              ? null
-              : '/home',
-        Unauthenticated() =>
-          !authRoutes.contains(currentLocation) ? null : '/login',
-        AuthFailure() => null,
-      };
+      if (authState is AuthUnknown) {
+        return '/splash';
+      }
+      if (authState is Authenticated) {
+        if (isAuthRoute || currentLocation == '/splash') {
+          return '/home';
+        }
+      }
+      if (authState is Unauthenticated) {
+        if (!isAuthRoute) {
+          return '/login';
+        }
+      }
+      return null;
     },
     refreshListenable: GoRouterRefreshStream(authBloc.stream),
   );

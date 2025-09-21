@@ -19,7 +19,6 @@ class _SignupScreenState extends State<SignupScreen> {
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   late final TextEditingController _confirmPasswordController;
-  var _isLoading = false;
 
   @override
   void initState() {
@@ -37,8 +36,7 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  void _signUp() {
-    if (_isLoading) return;
+  void _signUp(BuildContext context) {
     context.read<AuthBloc>().add(
       SignUpRequested(
         email: _emailController.text.trim(),
@@ -51,115 +49,115 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     final appTheme = Theme.of(context).extension<AppColorsExtension>()!;
     final textTheme = Theme.of(context).textTheme;
-    return BlocListener(
+    return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        setState(() {
-          _isLoading = state is AuthUnknown;
-        });
         if (state is AuthFailure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => context.pop(),
-            icon: PhosphorIcon(
-              PhosphorIcons.arrowLeft(),
-              color: appTheme.onBackground,
+      builder: (context, state) {
+        final isLoading = state is AuthLoading;
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () => context.pop(),
+              icon: PhosphorIcon(
+                PhosphorIcons.arrowLeft(),
+                color: appTheme.onBackground,
+              ),
             ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
           ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Gap(height: 24),
-                Text(
-                  'Create Account',
-                  style: textTheme.displayLarge?.copyWith(
-                    color: appTheme.onBackground,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Gap(height: 24),
+                  Text(
+                    'Create Account',
+                    style: textTheme.displayLarge?.copyWith(
+                      color: appTheme.onBackground,
+                    ),
                   ),
-                ),
-                const Gap(height: 8),
-                Text(
-                  'Start your journey with DevJot',
-                  style: textTheme.titleMedium?.copyWith(
-                    color: appTheme.hintText,
-                  ),
-                ),
-                const Gap(height: 48),
-                CustomTextFormField(
-                  hintText: 'Email',
-                  controller: _emailController,
-                  prefixIcon: PhosphorIcon(
-                    PhosphorIcons.at(PhosphorIconsStyle.regular),
-                    color: appTheme.hintText,
-                  ),
-                ),
-                const Gap(height: 20),
-                CustomTextFormField(
-                  hintText: 'Password',
-                  controller: _passwordController,
-                  obscureText: true,
-                  prefixIcon: PhosphorIcon(
-                    PhosphorIcons.lock(PhosphorIconsStyle.regular),
-                    color: appTheme.hintText,
-                  ),
-                ),
-                const Gap(height: 20),
-                CustomTextFormField(
-                  hintText: 'Confirm Password',
-                  obscureText: true,
-                  controller: _confirmPasswordController,
-                  prefixIcon: PhosphorIcon(
-                    PhosphorIcons.lockKey(PhosphorIconsStyle.regular),
-                    color: appTheme.hintText,
-                  ),
-                ),
-                const Gap(height: 32),
-                ElevatedButton(
-                  onPressed: _signUp,
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Sign Up'),
-                ),
-                const Gap(height: 24),
-                RichText(
-                  text: TextSpan(
-                    style: textTheme.bodyMedium?.copyWith(
+                  const Gap(height: 8),
+                  Text(
+                    'Start your journey with DevJot',
+                    style: textTheme.titleMedium?.copyWith(
                       color: appTheme.hintText,
                     ),
-                    children: [
-                      const TextSpan(text: 'Already have an account? '),
-                      TextSpan(
-                        text: 'Log In',
-                        style: TextStyle(
-                          color: appTheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () => context.pop(),
-                      ),
-                    ],
                   ),
-                ),
-                const Gap(height: 48),
-              ],
+                  const Gap(height: 48),
+                  CustomTextFormField(
+                    hintText: 'Email',
+                    controller: _emailController,
+                    prefixIcon: PhosphorIcon(
+                      PhosphorIcons.at(PhosphorIconsStyle.regular),
+                      color: appTheme.hintText,
+                    ),
+                  ),
+                  const Gap(height: 20),
+                  CustomTextFormField(
+                    hintText: 'Password',
+                    controller: _passwordController,
+                    obscureText: true,
+                    prefixIcon: PhosphorIcon(
+                      PhosphorIcons.lock(PhosphorIconsStyle.regular),
+                      color: appTheme.hintText,
+                    ),
+                  ),
+                  const Gap(height: 20),
+                  CustomTextFormField(
+                    hintText: 'Confirm Password',
+                    obscureText: true,
+                    controller: _confirmPasswordController,
+                    prefixIcon: PhosphorIcon(
+                      PhosphorIcons.lockKey(PhosphorIconsStyle.regular),
+                      color: appTheme.hintText,
+                    ),
+                  ),
+                  const Gap(height: 32),
+                  ElevatedButton(
+                    onPressed: isLoading ? null : () => _signUp(context),
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Sign Up'),
+                  ),
+                  const Gap(height: 24),
+                  RichText(
+                    text: TextSpan(
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: appTheme.hintText,
+                      ),
+                      children: [
+                        const TextSpan(text: 'Already have an account? '),
+                        TextSpan(
+                          text: 'Log In',
+                          style: TextStyle(
+                            color: appTheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () => context.pop(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Gap(height: 48),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

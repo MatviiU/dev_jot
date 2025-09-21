@@ -1,4 +1,4 @@
-import 'package:dev_jot/features/auth/domain/exceptions/auth_exceptions.dart';
+import 'package:dev_jot/features/auth/domain/exceptions/auth_exception.dart';
 import 'package:dev_jot/features/auth/domain/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

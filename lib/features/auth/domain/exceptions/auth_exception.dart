@@ -1,5 +1,5 @@
-class AuthExceptions implements Exception {
-  AuthExceptions(this.message);
+class AuthException implements Exception {
+  AuthException(this.message);
 
   final String message;
 
@@ -7,23 +7,23 @@ class AuthExceptions implements Exception {
   String toString() => 'AuthExceptions: $message';
 }
 
-class WeakPasswordException extends AuthExceptions {
+class WeakPasswordException extends AuthException {
   WeakPasswordException() : super('The password provided is too weak.');
 }
 
-class EmailAlreadyInUseException extends AuthExceptions {
+class EmailAlreadyInUseException extends AuthException {
   EmailAlreadyInUseException()
     : super('The account already exists for that email.');
 }
 
-class UserNotFoundException extends AuthExceptions {
+class UserNotFoundException extends AuthException {
   UserNotFoundException() : super('No user found for that email.');
 }
 
-class WrongPasswordException extends AuthExceptions {
+class WrongPasswordException extends AuthException {
   WrongPasswordException() : super('Wrong password provided for that user.');
 }
 
-class UnknownAuthException extends AuthExceptions {
+class UnknownAuthException extends AuthException {
   UnknownAuthException() : super('Something went wrong.');
 }
