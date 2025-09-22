@@ -3,6 +3,8 @@ import 'package:dev_jot/features/app/widgets/splash_screen.dart';
 import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_jot/features/auth/presentation/screens/login_screen.dart';
 import 'package:dev_jot/features/auth/presentation/screens/signup_screen.dart';
+import 'package:dev_jot/features/notes/domain/models/note.dart';
+import 'package:dev_jot/features/notes/presentation/screens/add_edit_note_screen.dart';
 import 'package:dev_jot/features/notes/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -34,6 +36,16 @@ class AppRouter {
         path: '/home',
         name: ScreenNames.home,
         builder: (context, state) => const HomeScreen(),
+        routes: [
+          GoRoute(
+            path: '/note',
+            name: ScreenNames.addEditNote,
+            builder: (context, state) {
+              final note = state.extra as Note?;
+              return AddEditNoteScreen(note: note);
+            },
+          ),
+        ],
       ),
     ],
     redirect: (context, state) {
