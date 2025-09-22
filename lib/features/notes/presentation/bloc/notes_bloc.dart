@@ -18,6 +18,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     on<AddNoteRequested>(_onAddNoteRequested);
     on<UpdateNoteRequested>(_onUpdateNoteRequested);
     on<DeleteNoteRequested>(_onDeleteNoteRequested);
+    on<NotesFailureEvent>(_onNotesFailure);
   }
 
   final NotesRepository _notesRepository;
@@ -28,7 +29,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     await _notesSubscription?.cancel();
     _notesSubscription = _notesRepository.getNotesStream().listen(
       (notes) => add(NotesUpdated(notes)),
-      onError: (Object error) => emit(NotesFailure(error.toString())),
+      onError: (Object error) => add(NotesFailureEvent(error.toString())),
     );
   }
 
@@ -42,7 +43,10 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
   ) async {
     emit(NotesLoading());
     try {
-      await _notesRepository.addNote(event.note);
+      await _notesRepository.addNote(
+        title: event.title,
+        content: event.content,
+      );
     } catch (e) {
       emit(NotesFailure(e.toString()));
     }
@@ -70,6 +74,10 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     } catch (e) {
       emit(NotesFailure(e.toString()));
     }
+  }
+
+  void _onNotesFailure(NotesFailureEvent event, Emitter<NotesState> emit) {
+    emit(NotesFailure(event.error));
   }
 
   @override

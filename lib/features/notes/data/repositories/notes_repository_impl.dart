@@ -14,25 +14,22 @@ class NotesRepositoryImpl implements NotesRepository {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
 
-  CollectionReference<Note> _getNotesCollection() {
+  CollectionReference<Map<String, dynamic>> _getNotesCollection() {
     final userId = _auth.currentUser?.uid;
     if (userId == null) {
       throw UserNotFoundExceptionWithUid();
     }
-    return _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('notes')
-        .withConverter<Note>(
-          fromFirestore: (snapshot, _) =>
-              Note.fromJson(snapshot.data()!).copyWith(id: snapshot.id),
-          toFirestore: (note, _) => note.toJson(),
-        );
+    return _firestore.collection('users').doc(userId).collection('notes');
   }
 
   @override
-  Future<void> addNote(Note note) {
-    return _getNotesCollection().add(note);
+  Future<void> addNote({required String title, required String content}) {
+    return _getNotesCollection().add({
+      'title': title,
+      'content': content,
+      'createdAt': FieldValue.serverTimestamp(),
+      'tags': <String>[],
+    });
   }
 
   @override
@@ -46,7 +43,10 @@ class NotesRepositoryImpl implements NotesRepository {
   @override
   Stream<List<Note>> getNotesStream() {
     return _getNotesCollection().snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) => doc.data()).toList();
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        return Note.fromJson(data).copyWith(id: doc.id);
+      }).toList();
     });
   }
 

@@ -1,6 +1,5 @@
 part of 'notes_bloc.dart';
 
-
 sealed class NotesEvent extends Equatable {
   const NotesEvent();
 
@@ -20,12 +19,13 @@ final class NotesUpdated extends NotesEvent {
 }
 
 final class AddNoteRequested extends NotesEvent {
-  const AddNoteRequested(this.note);
+  const AddNoteRequested({required this.title, required this.content});
 
-  final Note note;
+  final String title;
+  final String content;
 
   @override
-  List<Object?> get props => [note];
+  List<Object?> get props => [title, content];
 }
 
 final class UpdateNoteRequested extends NotesEvent {
@@ -44,4 +44,13 @@ final class DeleteNoteRequested extends NotesEvent {
 
   @override
   List<Object?> get props => [noteId];
+}
+
+final class NotesFailureEvent extends NotesEvent {
+  const NotesFailureEvent(this.error);
+
+  final String error;
+
+  @override
+  List<Object?> get props => [error];
 }

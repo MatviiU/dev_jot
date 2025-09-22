@@ -1,7 +1,9 @@
 import 'package:dev_jot/core/theme/app_theme.dart';
+import 'package:dev_jot/features/app/screen_names.dart';
 import 'package:dev_jot/features/app/widgets/gap.dart';
 import 'package:dev_jot/features/notes/domain/models/note.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class NoteListItem extends StatelessWidget {
   const NoteListItem({required this.note, super.key});
@@ -13,7 +15,7 @@ class NoteListItem extends StatelessWidget {
     final appTheme = Theme.of(context).extension<AppColorsExtension>()!;
     final textTheme = Theme.of(context).textTheme;
     return InkWell(
-      onTap: () {},
+      onTap: () => context.pushNamed(ScreenNames.addEditNote, extra: note),
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.all(16),

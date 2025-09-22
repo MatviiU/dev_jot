@@ -1,4 +1,5 @@
 import 'package:dev_jot/core/theme/app_theme.dart';
+import 'package:dev_jot/features/app/screen_names.dart';
 import 'package:dev_jot/features/app/widgets/failure_screen.dart';
 import 'package:dev_jot/features/app/widgets/splash_screen.dart';
 import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:dev_jot/features/notes/presentation/widgets/empty_notes.dart';
 import 'package:dev_jot/features/notes/presentation/widgets/note_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -65,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => context.pushNamed(ScreenNames.addEditNote),
         child: PhosphorIcon(PhosphorIcons.plus(PhosphorIconsStyle.regular)),
       ),
     );
