@@ -10,6 +10,9 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     required this.onBackground,
     required this.hintText,
     required this.onSurface,
+    required this.onPrimary,
+    required this.error,
+    required this.onError,
   });
 
   final Color? background;
@@ -18,6 +21,9 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
   final Color? onBackground;
   final Color? hintText;
   final Color? onSurface;
+  final Color? onPrimary;
+  final Color? error;
+  final Color? onError;
 
   @override
   ThemeExtension<AppColorsExtension> copyWith({
@@ -27,6 +33,9 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     Color? onBackground,
     Color? hintText,
     Color? onSurface,
+    Color? onPrimary,
+    Color? error,
+    Color? onError,
   }) {
     return AppColorsExtension(
       background: background ?? this.background,
@@ -35,6 +44,9 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       onBackground: onBackground ?? this.onBackground,
       hintText: hintText ?? this.hintText,
       onSurface: onSurface ?? this.onSurface,
+      onPrimary: onPrimary ?? this.onPrimary,
+      error: error ?? this.error,
+      onError: onError ?? this.onError,
     );
   }
 
@@ -53,6 +65,9 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       onBackground: Color.lerp(onBackground, other.onBackground, t),
       hintText: Color.lerp(hintText, other.hintText, t),
       onSurface: Color.lerp(onSurface, other.onSurface, t),
+      onPrimary: Color.lerp(onPrimary, other.onPrimary, t),
+      error: Color.lerp(error, other.error, t),
+      onError: Color.lerp(onError, other.onError, t),
     );
   }
 }
@@ -64,6 +79,9 @@ const _darkAppColors = AppColorsExtension(
   onBackground: Color(0xFFF5F5F5),
   hintText: Color(0xFF888888),
   onSurface: Color(0xFFF5F5F5),
+  onPrimary: Color(0xFF1E1E1E),
+  error: Color(0xFFFFB4AB),
+  onError: Color(0xFF690005),
 );
 
 final darkTheme = ThemeData(
@@ -72,7 +90,10 @@ final darkTheme = ThemeData(
   colorScheme: ColorScheme.dark(
     surface: _darkAppColors.surface!,
     primary: _darkAppColors.primary!,
+    onPrimary: _darkAppColors.onPrimary!,
     onSurface: _darkAppColors.onSurface!,
+    error: _darkAppColors.error!,
+    onError: _darkAppColors.onError!,
   ),
 
   textTheme: GoogleFonts.jetBrainsMonoTextTheme(ThemeData.dark().textTheme)

@@ -13,24 +13,94 @@ class NoteListItem extends StatelessWidget {
 
   final Note note;
 
+  Future<bool?> _showConfirmationDialog(BuildContext context) {
+    final appTheme = Theme.of(context).extension<AppColorsExtension>()!;
+    final textTheme = Theme.of(context).textTheme;
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          backgroundColor: appTheme.surface,
+          title: Text(
+            'Confirm Deletion',
+            style: textTheme.titleLarge?.copyWith(color: appTheme.onSurface),
+          ),
+          content: Text(
+            'Are you sure you want to delete this note?',
+            style: textTheme.bodyMedium?.copyWith(color: appTheme.hintText),
+          ),
+          actions: [
+            Row(
+              children: [
+                TextButton(
+                  onPressed: () => context.pop(false),
+                  child: Text(
+                    'Cancel',
+                    style: textTheme.labelLarge?.copyWith(
+                      color: appTheme.onSurface,
+                    ),
+                  ),
+                ),
+                const Gap(width: 8),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: appTheme.error,
+                    foregroundColor: appTheme.onError,
+                    minimumSize: Size.zero,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: () {
+                    context.read<NotesBloc>().add(DeleteNoteRequested(note.id));
+                    context.pop(true);
+                  },
+                  child: Text(
+                    'Delete',
+                    style: textTheme.labelLarge?.copyWith(
+                      color: appTheme.background,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final appTheme = Theme.of(context).extension<AppColorsExtension>()!;
     final textTheme = Theme.of(context).textTheme;
     return Dismissible(
       key: Key(note.id),
-      onDismissed: (direction) =>
-          context.read<NotesBloc>().add(DeleteNoteRequested(note.id)),
+      confirmDismiss: (direction) => _showConfirmationDialog(context),
       direction: DismissDirection.endToStart,
       background: ColoredBox(
-        color: Colors.red,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            PhosphorIcon(PhosphorIcons.trash()),
-            const Gap(width: 16),
-            const Text('Delete'),
-          ],
+        color: appTheme.error!,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              PhosphorIcon(
+                PhosphorIcons.trash(PhosphorIconsStyle.bold),
+                color: appTheme.onError,
+              ),
+              const Gap(width: 16),
+              Text(
+                'Delete',
+                style: textTheme.labelLarge?.copyWith(color: appTheme.onError),
+              ),
+            ],
+          ),
         ),
       ),
       child: InkWell(
@@ -43,7 +113,8 @@ class NoteListItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 note.title,
