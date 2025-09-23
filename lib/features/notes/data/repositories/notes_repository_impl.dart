@@ -23,12 +23,16 @@ class NotesRepositoryImpl implements NotesRepository {
   }
 
   @override
-  Future<void> addNote({required String title, required String content}) {
+  Future<void> addNote({
+    required String title,
+    required String content,
+    List<String> tags = const [],
+  }) {
     return _getNotesCollection().add({
       'title': title,
       'content': content,
       'createdAt': FieldValue.serverTimestamp(),
-      'tags': <String>[],
+      'tags': tags,
     });
   }
 

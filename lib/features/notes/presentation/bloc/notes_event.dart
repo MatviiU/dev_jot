@@ -19,13 +19,18 @@ final class NotesUpdated extends NotesEvent {
 }
 
 final class AddNoteRequested extends NotesEvent {
-  const AddNoteRequested({required this.title, required this.content});
+  const AddNoteRequested({
+    required this.title,
+    required this.content,
+    this.tags = const [],
+  });
 
   final String title;
   final String content;
+  final List<String> tags;
 
   @override
-  List<Object?> get props => [title, content];
+  List<Object?> get props => [title, content, tags];
 }
 
 final class UpdateNoteRequested extends NotesEvent {

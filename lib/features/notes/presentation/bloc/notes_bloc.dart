@@ -41,11 +41,11 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     AddNoteRequested event,
     Emitter<NotesState> emit,
   ) async {
-    emit(NotesLoading());
     try {
       await _notesRepository.addNote(
         title: event.title,
         content: event.content,
+        tags: event.tags,
       );
     } catch (e) {
       emit(NotesFailure(e.toString()));
@@ -56,7 +56,6 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     UpdateNoteRequested event,
     Emitter<NotesState> emit,
   ) async {
-    emit(NotesLoading());
     try {
       await _notesRepository.updateNote(event.note);
     } catch (e) {
@@ -68,7 +67,6 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     DeleteNoteRequested event,
     Emitter<NotesState> emit,
   ) async {
-    emit(NotesLoading());
     try {
       await _notesRepository.deleteNote(event.noteId);
     } catch (e) {
