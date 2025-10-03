@@ -1,6 +1,7 @@
 import 'package:dev_jot/core/theme/app_theme.dart';
 import 'package:dev_jot/features/app/screen_names.dart';
 import 'package:dev_jot/features/app/widgets/failure_screen.dart';
+import 'package:dev_jot/features/app/widgets/gap.dart';
 import 'package:dev_jot/features/app/widgets/splash_screen.dart';
 import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
@@ -19,11 +20,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late TextEditingController _searchController;
+
   @override
   void initState() {
     super.initState();
 
+    _searchController = TextEditingController();
     context.read<NotesBloc>().add(LoadNotes());
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -53,18 +63,94 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: BlocBuilder<NotesBloc, NotesState>(
-          builder: (context, state) {
-            return switch (state) {
-              NotesInitial() || NotesLoading() => const SplashScreen(),
-              NotesLoaded(notes: final notes) =>
-                notes.isEmpty ? const EmptyNotes() : NoteList(notes: notes),
-              NotesFailure() => const FailureScreen(),
-            };
-          },
-        ),
+      body: BlocBuilder<NotesBloc, NotesState>(
+        builder: (context, state) {
+          return switch (state) {
+            NotesInitial() || NotesLoading() => const SplashScreen(),
+            NotesLoaded() => Builder(
+              builder: (context) {
+                final uniqueTags = state.notes
+                    .expand((note) => note.tags)
+                    .toSet()
+                    .toList();
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: TextFormField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          prefixIcon: PhosphorIcon(
+                            PhosphorIcons.magnifyingGlass(
+                              PhosphorIconsStyle.regular,
+                            ),
+                            color: appTheme.hintText,
+                          ),
+                        ),
+                        onChanged: (query) {
+                          context.read<NotesBloc>().add(
+                            SearchQueryChanged(query),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 50,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: uniqueTags.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: FilterChip(
+                                label: const Text('All'),
+                                selected: state.selectedTag == null,
+                                onSelected: (value) {
+                                  context.read<NotesBloc>().add(
+                                    const TagSelected(null),
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                          final tag = uniqueTags[index - 1];
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: FilterChip(
+                              label: Text(tag),
+                              selected: state.selectedTag == tag,
+                              onSelected: (isSelected) {
+                                context.read<NotesBloc>().add(
+                                  TagSelected(isSelected ? tag : null),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const Gap(height: 16,),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: state.filteredNotes.isEmpty
+                            ? const EmptyNotes()
+                            : NoteList(notes: state.filteredNotes),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+            NotesFailure() => const FailureScreen(),
+          };
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.pushNamed(ScreenNames.addEditNote),

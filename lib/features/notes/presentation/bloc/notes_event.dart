@@ -10,7 +10,7 @@ sealed class NotesEvent extends Equatable {
 final class LoadNotes extends NotesEvent {}
 
 final class NotesUpdated extends NotesEvent {
-  const NotesUpdated(this.notes);
+  const NotesUpdated({required this.notes});
 
   final List<Note> notes;
 
@@ -19,13 +19,18 @@ final class NotesUpdated extends NotesEvent {
 }
 
 final class AddNoteRequested extends NotesEvent {
-  const AddNoteRequested({required this.title, required this.content});
+  const AddNoteRequested({
+    required this.title,
+    required this.content,
+    this.tags = const [],
+  });
 
   final String title;
   final String content;
+  final List<String> tags;
 
   @override
-  List<Object?> get props => [title, content];
+  List<Object?> get props => [title, content, tags];
 }
 
 final class UpdateNoteRequested extends NotesEvent {
@@ -35,6 +40,24 @@ final class UpdateNoteRequested extends NotesEvent {
 
   @override
   List<Object?> get props => [note];
+}
+
+final class TagSelected extends NotesEvent {
+  const TagSelected(this.tag);
+
+  final String? tag;
+
+  @override
+  List<Object?> get props => [tag];
+}
+
+final class SearchQueryChanged extends NotesEvent {
+  const SearchQueryChanged(this.query);
+
+  final String query;
+
+  @override
+  List<Object?> get props => [query];
 }
 
 final class DeleteNoteRequested extends NotesEvent {
