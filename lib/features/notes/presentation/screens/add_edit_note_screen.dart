@@ -65,8 +65,8 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
     context.pop();
   }
 
-  void _addTag(String tag) {
-    final tag = _tagController.text.trim();
+  void _addTag(String submittedTag) {
+    final tag = submittedTag.trim();
     if (tag.isNotEmpty && !_tags.contains(tag)) {
       setState(() {
         _tags.add(tag);
@@ -169,8 +169,8 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                   ),
                 ),
                 style: textTheme.bodyMedium,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
+                maxLines: 1,
+                keyboardType: TextInputType.text,
               ),
             ],
           ),

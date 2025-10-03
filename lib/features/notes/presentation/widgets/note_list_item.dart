@@ -133,6 +133,13 @@ class NoteListItem extends StatelessWidget {
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: note.tags.map((tag) {
+                  return Chip(label: Text(tag));
+                }).toList(),
+              ),
             ],
           ),
         ),
