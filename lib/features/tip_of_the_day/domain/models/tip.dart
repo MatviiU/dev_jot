@@ -10,6 +10,8 @@ class Tip extends Equatable {
   factory Tip.fromJson(Map<String, dynamic> json) => _$TipFromJson(json);
 
   final String id;
+
+  @JsonKey(name: 'advice')
   final String text;
 
   Map<String, dynamic> toJson() => _$TipToJson(this);
