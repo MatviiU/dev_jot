@@ -6,6 +6,7 @@ import 'package:dev_jot/features/auth/presentation/screens/signup_screen.dart';
 import 'package:dev_jot/features/notes/domain/models/note.dart';
 import 'package:dev_jot/features/notes/presentation/screens/add_edit_note_screen.dart';
 import 'package:dev_jot/features/notes/presentation/screens/home_screen.dart';
+import 'package:dev_jot/features/settings/presentation/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -44,6 +45,11 @@ class AppRouter {
               final note = state.extra as Note?;
               return AddEditNoteScreen(note: note);
             },
+          ),
+          GoRoute(
+            path: '/settings',
+            name: ScreenNames.settings,
+            builder: (context, state) => const SettingsScreen(),
           ),
         ],
       ),

@@ -3,15 +3,19 @@ import 'package:dev_jot/core/navigation/app_router.dart';
 import 'package:dev_jot/core/theme/app_theme.dart';
 import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
+import 'package:dev_jot/features/settings/presentation/cubit/theme_cubit.dart';
 import 'package:dev_jot/features/tip_of_the_day/presentation/cubit/tip_cubit.dart';
 import 'package:dev_jot/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final prefs = await SharedPreferences.getInstance();
+  di.getIt.registerSingleton<SharedPreferences>(prefs);
   di.setupDependencies();
 
   runApp(
@@ -20,6 +24,7 @@ void main() async {
         BlocProvider(create: (context) => di.getIt<AuthBloc>()),
         BlocProvider(create: (context) => di.getIt<NotesBloc>()),
         BlocProvider(create: (context) => di.getIt<TipCubit>()),
+        BlocProvider(create: (context) => di.getIt<ThemeCubit>()),
       ],
       child: const MyApp(),
     ),
@@ -32,10 +37,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appRouter = AppRouter(authBloc: context.read<AuthBloc>());
-    return MaterialApp.router(
-      title: 'DevJot',
-      routerConfig: appRouter.router,
-      theme: darkTheme,
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, state) {
+        return MaterialApp.router(
+          title: 'DevJot',
+          routerConfig: appRouter.router,
+          darkTheme: darkTheme,
+          theme: lightTheme,
+          themeMode: state,
+        );
+      },
     );
   }
 }

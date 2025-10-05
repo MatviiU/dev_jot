@@ -141,3 +141,71 @@ final darkTheme = ThemeData(
   ),
   extensions: const <ThemeExtension<dynamic>>[_darkAppColors],
 );
+
+const _lightAppColors = AppColorsExtension(
+  background: Color(0xFFF5F5F5),
+  surface: Color(0xFFFFFFFF),
+  primary: Color(0xFF3A86FF),
+  onBackground: Color(0xFF1E1E1E),
+  hintText: Color(0xFF757575),
+  onSurface: Color(0xFF1E1E1E),
+  onPrimary: Color(0xFFFFFFFF),
+  error: Color(0xFFB00020),
+  onError: Color(0xFFFFFFFF),
+);
+
+final lightTheme = ThemeData(
+  brightness: Brightness.light,
+  scaffoldBackgroundColor: _lightAppColors.background,
+  colorScheme: ColorScheme.light(
+    surface: _lightAppColors.surface!,
+    primary: _lightAppColors.primary!,
+    onPrimary: _lightAppColors.onPrimary!,
+    onSurface: _lightAppColors.onSurface!,
+    error: _lightAppColors.error!,
+    onError: _lightAppColors.onError!,
+  ),
+  textTheme: GoogleFonts.jetBrainsMonoTextTheme(ThemeData.light().textTheme)
+      .copyWith(
+        displayLarge: const TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+        ),
+        headlineMedium: const TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+        ),
+        titleLarge: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        titleMedium: const TextStyle(fontSize: 16),
+        bodyLarge: const TextStyle(fontSize: 16),
+        bodyMedium: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+        ),
+        labelLarge: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+      ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: _lightAppColors.primary,
+      foregroundColor: _lightAppColors.onPrimary,
+      minimumSize: const Size(double.infinity, 56),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+    ),
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    filled: true,
+    fillColor: _lightAppColors.surface,
+    hintStyle: TextStyle(color: _lightAppColors.hintText),
+    border: InputBorder.none,
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey.shade300),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: _lightAppColors.primary!, width: 1.5),
+    ),
+  ),
+  extensions: const <ThemeExtension<dynamic>>[_lightAppColors],
+);

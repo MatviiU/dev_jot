@@ -5,6 +5,9 @@ import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_jot/features/notes/data/repositories/notes_repository_impl.dart';
 import 'package:dev_jot/features/notes/domain/repositories/notes_repository.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
+import 'package:dev_jot/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:dev_jot/features/settings/domain/repositories/settings_repository.dart';
+import 'package:dev_jot/features/settings/presentation/cubit/theme_cubit.dart';
 import 'package:dev_jot/features/tip_of_the_day/data/datasource/tip_api_service.dart';
 import 'package:dev_jot/features/tip_of_the_day/data/repository/tip_repository_impl.dart';
 import 'package:dev_jot/features/tip_of_the_day/domain/repositories/tip_repository.dart';
@@ -12,6 +15,7 @@ import 'package:dev_jot/features/tip_of_the_day/presentation/cubit/tip_cubit.dar
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final getIt = GetIt.instance;
 
@@ -43,5 +47,12 @@ void setupDependencies() {
     )
     ..registerFactory<TipCubit>(
       () => TipCubit(tipRepository: getIt<TipRepository>()),
+    )
+    ..registerLazySingleton<SettingsRepository>(
+      () =>
+          SettingsRepositoryImpl(sharedPreferences: getIt<SharedPreferences>()),
+    )
+    ..registerLazySingleton<ThemeCubit>(
+      () => ThemeCubit(settingsRepository: getIt<SettingsRepository>()),
     );
 }
