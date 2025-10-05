@@ -56,6 +56,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
+            onPressed: () => context.pushNamed(ScreenNames.settings),
+            icon: PhosphorIcon(PhosphorIcons.gear(PhosphorIconsStyle.regular)),
+          ),
+          IconButton(
             color: appTheme.onBackground,
             icon: PhosphorIcon(
               PhosphorIcons.signOut(PhosphorIconsStyle.regular),
