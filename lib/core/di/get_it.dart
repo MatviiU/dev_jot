@@ -5,6 +5,11 @@ import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_jot/features/notes/data/repositories/notes_repository_impl.dart';
 import 'package:dev_jot/features/notes/domain/repositories/notes_repository.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
+import 'package:dev_jot/features/tip_of_the_day/data/datasource/tip_api_service.dart';
+import 'package:dev_jot/features/tip_of_the_day/data/repository/tip_repository_impl.dart';
+import 'package:dev_jot/features/tip_of_the_day/domain/repositories/tip_repository.dart';
+import 'package:dev_jot/features/tip_of_the_day/presentation/cubit/tip_cubit.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 
@@ -28,5 +33,15 @@ void setupDependencies() {
     )
     ..registerFactory<NotesBloc>(
       () => NotesBloc(notesRepository: getIt<NotesRepository>()),
+    )
+    ..registerLazySingleton<Dio>(
+      () => Dio(BaseOptions(contentType: 'application/json')),
+    )
+    ..registerLazySingleton<TipApiService>(() => TipApiService(getIt<Dio>()))
+    ..registerLazySingleton<TipRepository>(
+      () => TipRepositoryImpl(tipApiService: getIt<TipApiService>()),
+    )
+    ..registerFactory<TipCubit>(
+      () => TipCubit(tipRepository: getIt<TipRepository>()),
     );
 }

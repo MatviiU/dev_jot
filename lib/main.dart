@@ -3,6 +3,7 @@ import 'package:dev_jot/core/navigation/app_router.dart';
 import 'package:dev_jot/core/theme/app_theme.dart';
 import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
+import 'package:dev_jot/features/tip_of_the_day/presentation/cubit/tip_cubit.dart';
 import 'package:dev_jot/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ void main() async {
       providers: [
         BlocProvider(create: (context) => di.getIt<AuthBloc>()),
         BlocProvider(create: (context) => di.getIt<NotesBloc>()),
+        BlocProvider(create: (context) => di.getIt<TipCubit>()),
       ],
       child: const MyApp(),
     ),

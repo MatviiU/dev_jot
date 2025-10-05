@@ -16,8 +16,7 @@ dependencies:
   firebase_core: ^4.1.0
   firebase_auth: ^6.0.2
   cloud_firestore: ^6.0.1
-  retrofit: ^4.6.0
-  logger: ^2.6.0
+  retrofit: ^4.7.1
   json_annotation: ^4.9.0
   dio: ^5.9.0
   equatable: ^2.0.7
@@ -31,9 +30,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  retrofit_generator: ^10.0.1
-  build_runner: ^2.6.0
-  json_serializable: ^6.10.0
+  retrofit_generator: ^10.0.5
+  build_runner: ^2.7.1
+  json_serializable: ^6.8.0
   flutter_lints: ^5.0.0
 
 flutter:

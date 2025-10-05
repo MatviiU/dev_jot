@@ -16,7 +16,14 @@ class TipRepositoryImpl implements TipRepository {
       return await _tipApiService.getTip();
     } on DioException {
       throw FetchTipException();
-    } catch (e) {
+    } catch (e, stackTrace) { // Додайте stackTrace
+      // Виведіть помилку та її трасування в консоль
+      print('----------- UNKNOWN TIP ERROR -----------');
+      print('Error type: ${e.runtimeType}');
+      print('Error value: $e');
+      print('Stack trace: $stackTrace');
+      print('-----------------------------------------');
+
       throw UnknownTipException();
     }
   }

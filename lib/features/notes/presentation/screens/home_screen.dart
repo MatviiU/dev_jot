@@ -7,6 +7,8 @@ import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:dev_jot/features/notes/presentation/widgets/empty_notes.dart';
 import 'package:dev_jot/features/notes/presentation/widgets/note_list.dart';
+import 'package:dev_jot/features/tip_of_the_day/presentation/cubit/tip_cubit.dart';
+import 'package:dev_jot/features/tip_of_the_day/presentation/widgets/tip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -28,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     _searchController = TextEditingController();
     context.read<NotesBloc>().add(LoadNotes());
+    context.read<TipCubit>().fetchTipRequested();
   }
 
   @override
@@ -75,6 +78,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     .toList();
                 return Column(
                   children: [
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
+                      child: TipCard(),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -135,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                     ),
-                    const Gap(height: 16,),
+                    const Gap(height: 16),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
