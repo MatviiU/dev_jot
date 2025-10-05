@@ -7,6 +7,7 @@ import 'package:dev_jot/features/notes/domain/repositories/notes_repository.dart
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:dev_jot/features/settings/data/repositories/settings_repository_impl.dart';
 import 'package:dev_jot/features/settings/domain/repositories/settings_repository.dart';
+import 'package:dev_jot/features/settings/presentation/cubit/theme_cubit.dart';
 import 'package:dev_jot/features/tip_of_the_day/data/datasource/tip_api_service.dart';
 import 'package:dev_jot/features/tip_of_the_day/data/repository/tip_repository_impl.dart';
 import 'package:dev_jot/features/tip_of_the_day/domain/repositories/tip_repository.dart';
@@ -50,5 +51,8 @@ void setupDependencies() {
     ..registerLazySingleton<SettingsRepository>(
       () =>
           SettingsRepositoryImpl(sharedPreferences: getIt<SharedPreferences>()),
+    )
+    ..registerLazySingleton<ThemeCubit>(
+      () => ThemeCubit(settingsRepository: getIt<SettingsRepository>()),
     );
 }
