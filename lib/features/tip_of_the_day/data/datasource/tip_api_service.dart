@@ -1,5 +1,6 @@
 import 'package:dev_jot/features/tip_of_the_day/domain/models/tip.dart';
 import 'package:dio/dio.dart';
+import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 
 part 'tip_api_service.g.dart';
@@ -8,6 +9,6 @@ part 'tip_api_service.g.dart';
 abstract class TipApiService {
   factory TipApiService(Dio dio, {String baseUrl}) = _TipApiService;
 
-  @GET('/api/v1/advice')
+  @GET('api/v1/advice')
   Future<Tip> getTip();
 }
