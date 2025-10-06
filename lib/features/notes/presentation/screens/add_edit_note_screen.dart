@@ -4,7 +4,9 @@ import 'package:dev_jot/features/notes/domain/models/note.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:go_router/go_router.dart';
+import 'package:markdown/markdown.dart' as md;
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AddEditNoteScreen extends StatefulWidget {
@@ -24,6 +26,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
   late final TextEditingController _tagController;
   final _tags = <String>[];
   var _isCode = false;
+  var _isPreviewing = false;
 
   @override
   void initState() {
@@ -85,6 +88,13 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
     });
   }
 
+  void _togglePreview() {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _isPreviewing = !_isPreviewing;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final appTheme = Theme.of(context).extension<AppColorsExtension>()!;
@@ -105,6 +115,15 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
           style: textTheme.titleLarge?.copyWith(color: appTheme.onBackground),
         ),
         actions: [
+          IconButton(
+            onPressed: _togglePreview,
+            icon: PhosphorIcon(
+              _isPreviewing
+                  ? PhosphorIcons.eyeSlash(PhosphorIconsStyle.regular)
+                  : PhosphorIcons.eye(PhosphorIconsStyle.regular),
+              color: appTheme.onBackground,
+            ),
+          ),
           TextButton(
             onPressed: _saveNote,
             child: Text(
@@ -130,21 +149,29 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                 maxLines: 1,
               ),
               const Gap(height: 16),
-              TextFormField(
-                controller: _contentController,
-                decoration: const InputDecoration(
-                  hintText: 'Write something...',
-                  border: InputBorder.none,
+              if (_isPreviewing)
+                SizedBox(
+                  width: double.infinity,
+                  child: HtmlWidget(md.markdownToHtml(_contentController.text)),
                 ),
-                style: textTheme.bodyLarge,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-              ),
-              const Gap(height: 8),
+              if (!_isPreviewing)
+                TextFormField(
+                  controller: _contentController,
+                  decoration: const InputDecoration(
+                    hintText: 'Write something...',
+                    border: InputBorder.none,
+                  ),
+                  style: textTheme.bodyLarge,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                ),
+              const Gap(height: 16),
               SwitchListTile(
-                title: Text('Code snipped', style: textTheme.bodyMedium),
+                title: Text('Code snipped', style: textTheme.bodyLarge),
+                activeThumbColor: appTheme.primary,
                 secondary: PhosphorIcon(
                   PhosphorIcons.code(PhosphorIconsStyle.regular),
+                  color: appTheme.onSurface,
                 ),
                 value: _isCode,
                 onChanged: (newValue) {

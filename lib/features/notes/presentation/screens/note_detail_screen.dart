@@ -5,7 +5,9 @@ import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_syntax_view/flutter_syntax_view.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:go_router/go_router.dart';
+import 'package:markdown/markdown.dart' as md;
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class NoteDetailScreen extends StatelessWidget {
@@ -48,30 +50,32 @@ class NoteDetailScreen extends StatelessWidget {
               ),
             ],
           ),
-          body: currentNote.isCode
-              ? SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: SyntaxView(
-                      fontSize: 14,
-                      syntaxTheme: SyntaxTheme.vscodeDark(),
-                      code: currentNote.content,
-                      syntax: Syntax.DART,
-                      withLinesCount: true,
-                    ),
-                  ),
-                )
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: SelectableText(
-                      currentNote.content,
-                      style: textTheme.bodyLarge,
-                    ),
-                  ),
-                ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: _buildNoteContent(currentNote, Theme.of(context)),
+            ),
+          ),
         );
       },
     );
+  }
+
+  Widget _buildNoteContent(Note currentNote, ThemeData theme) {
+    if (currentNote.isCode) {
+      return SyntaxView(
+        fontSize: 14,
+        syntaxTheme: theme.brightness == Brightness.dark
+            ? SyntaxTheme.vscodeDark()
+            : SyntaxTheme.vscodeLight(),
+        code: currentNote.content,
+        syntax: Syntax.DART,
+        withLinesCount: true,
+        expanded: true,
+      );
+    } else {
+      final htmlContent = md.markdownToHtml(currentNote.content);
+      return HtmlWidget(htmlContent);
+    }
   }
 }
