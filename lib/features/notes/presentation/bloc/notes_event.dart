@@ -23,14 +23,16 @@ final class AddNoteRequested extends NotesEvent {
     required this.title,
     required this.content,
     this.tags = const [],
+    this.isCode = false,
   });
 
   final String title;
   final String content;
   final List<String> tags;
+  final bool isCode;
 
   @override
-  List<Object?> get props => [title, content, tags];
+  List<Object?> get props => [title, content, tags, isCode];
 }
 
 final class UpdateNoteRequested extends NotesEvent {

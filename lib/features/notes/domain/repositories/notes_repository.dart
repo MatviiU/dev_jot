@@ -7,6 +7,7 @@ abstract interface class NotesRepository {
     required String title,
     required String content,
     List<String> tags = const [],
+    bool isCode = false,
   });
 
   Future<void> updateNote(Note note);
