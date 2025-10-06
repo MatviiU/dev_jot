@@ -28,6 +28,7 @@ class NotesRepositoryImpl implements NotesRepository {
     required String content,
     List<String> tags = const [],
     bool isCode = false,
+    String language = 'dart',
   }) {
     return _getNotesCollection().add({
       'title': title,
@@ -35,6 +36,7 @@ class NotesRepositoryImpl implements NotesRepository {
       'createdAt': FieldValue.serverTimestamp(),
       'tags': tags,
       'isCode': isCode,
+      'language': language,
     });
   }
 
