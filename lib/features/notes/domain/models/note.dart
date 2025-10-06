@@ -13,6 +13,7 @@ class Note extends Equatable {
     this.createdAt,
     this.tags = const [],
     this.id = '',
+    this.isCode = false,
   });
 
   factory Note.fromJson(Map<String, dynamic> json) => _$NoteFromJson(json);
@@ -24,6 +25,7 @@ class Note extends Equatable {
   @TimestampConverter()
   final DateTime? createdAt;
   final List<String> tags;
+  final bool isCode;
 
   Map<String, dynamic> toJson() => _$NoteToJson(this);
 
@@ -33,6 +35,7 @@ class Note extends Equatable {
     String? content,
     DateTime? createdAt,
     List<String>? tags,
+    bool? isCode,
   }) {
     return Note(
       id: id ?? this.id,
@@ -40,9 +43,10 @@ class Note extends Equatable {
       content: content ?? this.content,
       createdAt: createdAt ?? this.createdAt,
       tags: tags ?? this.tags,
+      isCode: isCode ?? this.isCode,
     );
   }
 
   @override
-  List<Object?> get props => [id, title, content, createdAt, tags];
+  List<Object?> get props => [id, title, content, createdAt, tags, isCode];
 }
