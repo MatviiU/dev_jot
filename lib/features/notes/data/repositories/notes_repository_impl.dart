@@ -27,12 +27,14 @@ class NotesRepositoryImpl implements NotesRepository {
     required String title,
     required String content,
     List<String> tags = const [],
+    bool isCode = false,
   }) {
     return _getNotesCollection().add({
       'title': title,
       'content': content,
       'createdAt': FieldValue.serverTimestamp(),
       'tags': tags,
+      'isCode': isCode,
     });
   }
 

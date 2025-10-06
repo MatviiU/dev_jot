@@ -23,6 +23,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
   late final TextEditingController _contentController;
   late final TextEditingController _tagController;
   final _tags = <String>[];
+  var _isCode = false;
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
 
     if (widget.isEditing) {
       _tags.addAll(note!.tags);
+      _isCode = note.isCode;
     }
   }
 
@@ -51,6 +53,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
         title: _titleController.text.trim(),
         content: _contentController.text.trim(),
         tags: _tags,
+        isCode: _isCode,
       );
       context.read<NotesBloc>().add(UpdateNoteRequested(updateNote));
     } else {
@@ -59,6 +62,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
           title: _titleController.text.trim(),
           content: _contentController.text.trim(),
           tags: _tags,
+          isCode: _isCode,
         ),
       );
     }
@@ -135,6 +139,19 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                 style: textTheme.bodyLarge,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
+              ),
+              const Gap(height: 8),
+              SwitchListTile(
+                title: Text('Code snipped', style: textTheme.bodyMedium),
+                secondary: PhosphorIcon(
+                  PhosphorIcons.code(PhosphorIconsStyle.regular),
+                ),
+                value: _isCode,
+                onChanged: (newValue) {
+                  setState(() {
+                    _isCode = newValue;
+                  });
+                },
               ),
               const Divider(height: 32),
               Wrap(

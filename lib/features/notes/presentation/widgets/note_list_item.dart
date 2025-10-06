@@ -104,7 +104,7 @@ class NoteListItem extends StatelessWidget {
         ),
       ),
       child: InkWell(
-        onTap: () => context.pushNamed(ScreenNames.addEditNote, extra: note),
+        onTap: () => context.pushNamed(ScreenNames.noteDetails, extra: note),
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -116,13 +116,22 @@ class NoteListItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                note.title,
-                style: textTheme.titleLarge?.copyWith(
-                  color: appTheme.onSurface,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  note.isCode
+                      ? PhosphorIcon(PhosphorIcons.code())
+                      : const SizedBox.shrink(),
+                  const Gap(width: 8),
+                  Text(
+                    note.title,
+                    style: textTheme.titleLarge?.copyWith(
+                      color: appTheme.onSurface,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
               const Gap(height: 8),
               Text(
