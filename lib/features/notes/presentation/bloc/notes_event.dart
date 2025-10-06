@@ -24,15 +24,17 @@ final class AddNoteRequested extends NotesEvent {
     required this.content,
     this.tags = const [],
     this.isCode = false,
+    this.language = 'dart',
   });
 
   final String title;
   final String content;
   final List<String> tags;
   final bool isCode;
+  final String language;
 
   @override
-  List<Object?> get props => [title, content, tags, isCode];
+  List<Object?> get props => [title, content, tags, isCode, language];
 }
 
 final class UpdateNoteRequested extends NotesEvent {
