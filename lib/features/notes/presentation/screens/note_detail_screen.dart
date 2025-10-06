@@ -3,6 +3,7 @@ import 'package:dev_jot/features/app/screen_names.dart';
 import 'package:dev_jot/features/notes/domain/models/note.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_syntax_view/flutter_syntax_view.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -14,6 +15,13 @@ class NoteDetailScreen extends StatelessWidget {
   const NoteDetailScreen({required this.note, super.key});
 
   final Note note;
+
+  Syntax _stringToSyntax(String language) {
+    return Syntax.values.firstWhere(
+      (e) => e.name.toLowerCase() == language.toLowerCase(),
+      orElse: () => Syntax.DART,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +56,16 @@ class NoteDetailScreen extends StatelessWidget {
                     context.pushNamed(ScreenNames.addEditNote, extra: note),
                 icon: PhosphorIcon(PhosphorIcons.pencil()),
               ),
+              if (currentNote.isCode)
+                IconButton(
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: currentNote.content));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Copied to clipboard')),
+                    );
+                  },
+                  icon: PhosphorIcon(PhosphorIcons.copy()),
+                ),
             ],
           ),
           body: SingleChildScrollView(
@@ -69,7 +87,7 @@ class NoteDetailScreen extends StatelessWidget {
             ? SyntaxTheme.vscodeDark()
             : SyntaxTheme.vscodeLight(),
         code: currentNote.content,
-        syntax: Syntax.DART,
+        syntax: _stringToSyntax(currentNote.language),
         withLinesCount: true,
         expanded: true,
       );
