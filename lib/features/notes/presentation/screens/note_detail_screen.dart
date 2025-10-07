@@ -52,8 +52,10 @@ class NoteDetailScreen extends StatelessWidget {
             ),
             actions: [
               IconButton(
-                onPressed: () =>
-                    context.pushNamed(ScreenNames.addEditNote, extra: note),
+                onPressed: () => context.pushNamed(
+                  ScreenNames.addEditNote,
+                  extra: currentNote,
+                ),
                 icon: PhosphorIcon(PhosphorIcons.pencil()),
               ),
               if (currentNote.isCode)
@@ -61,7 +63,15 @@ class NoteDetailScreen extends StatelessWidget {
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: currentNote.content));
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Copied to clipboard')),
+                      SnackBar(
+                        backgroundColor: appTheme.surface,
+                        content: Text(
+                          'Copied to clipboard',
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: appTheme.onSurface,
+                          ),
+                        ),
+                      ),
                     );
                   },
                   icon: PhosphorIcon(PhosphorIcons.copy()),
@@ -89,7 +99,6 @@ class NoteDetailScreen extends StatelessWidget {
         code: currentNote.content,
         syntax: _stringToSyntax(currentNote.language),
         withLinesCount: true,
-        expanded: true,
       );
     } else {
       final htmlContent = md.markdownToHtml(currentNote.content);
