@@ -8,6 +8,7 @@ abstract interface class NotesRepository {
     required String content,
     List<String> tags = const [],
     bool isCode = false,
+    String language = 'dart',
   });
 
   Future<void> updateNote(Note note);

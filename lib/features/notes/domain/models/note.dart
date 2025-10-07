@@ -14,6 +14,7 @@ class Note extends Equatable {
     this.tags = const [],
     this.id = '',
     this.isCode = false,
+    this.language = 'dart',
   });
 
   factory Note.fromJson(Map<String, dynamic> json) => _$NoteFromJson(json);
@@ -26,6 +27,7 @@ class Note extends Equatable {
   final DateTime? createdAt;
   final List<String> tags;
   final bool isCode;
+  final String language;
 
   Map<String, dynamic> toJson() => _$NoteToJson(this);
 
@@ -36,6 +38,7 @@ class Note extends Equatable {
     DateTime? createdAt,
     List<String>? tags,
     bool? isCode,
+    String? language,
   }) {
     return Note(
       id: id ?? this.id,
@@ -44,9 +47,18 @@ class Note extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       tags: tags ?? this.tags,
       isCode: isCode ?? this.isCode,
+      language: language ?? this.language,
     );
   }
 
   @override
-  List<Object?> get props => [id, title, content, createdAt, tags, isCode];
+  List<Object?> get props => [
+    id,
+    title,
+    content,
+    createdAt,
+    tags,
+    isCode,
+    language,
+  ];
 }

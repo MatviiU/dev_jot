@@ -67,6 +67,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         content: event.content,
         tags: event.tags,
         isCode: event.isCode,
+        language: event.language,
       );
     } catch (e) {
       emit(NotesFailure(e.toString()));

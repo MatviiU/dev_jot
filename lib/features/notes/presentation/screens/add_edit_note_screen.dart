@@ -4,6 +4,7 @@ import 'package:dev_jot/features/notes/domain/models/note.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_syntax_view/flutter_syntax_view.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:markdown/markdown.dart' as md;
@@ -27,6 +28,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
   final _tags = <String>[];
   var _isCode = false;
   var _isPreviewing = false;
+  var _selectedLanguage = Syntax.DART;
 
   @override
   void initState() {
@@ -39,6 +41,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
     if (widget.isEditing) {
       _tags.addAll(note!.tags);
       _isCode = note.isCode;
+      _selectedLanguage = _stringToSyntax(note.language);
     }
   }
 
@@ -57,6 +60,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
         content: _contentController.text.trim(),
         tags: _tags,
         isCode: _isCode,
+        language: _selectedLanguage.name.toLowerCase(),
       );
       context.read<NotesBloc>().add(UpdateNoteRequested(updateNote));
     } else {
@@ -66,6 +70,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
           content: _contentController.text.trim(),
           tags: _tags,
           isCode: _isCode,
+          language: _selectedLanguage.name.toLowerCase(),
         ),
       );
     }
@@ -93,6 +98,13 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
     setState(() {
       _isPreviewing = !_isPreviewing;
     });
+  }
+
+  Syntax _stringToSyntax(String language) {
+    return Syntax.values.firstWhere(
+      (e) => e.name.toLowerCase() == language.toLowerCase(),
+      orElse: () => Syntax.DART,
+    );
   }
 
   @override
@@ -180,6 +192,32 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                   });
                 },
               ),
+              if (_isCode) ...[
+                const Gap(height: 16),
+                DropdownButtonFormField<Syntax>(
+                  initialValue: _selectedLanguage,
+                  items: Syntax.values.map((Syntax syntax) {
+                    return DropdownMenuItem<Syntax>(
+                      value: syntax,
+                      child: Text(syntax.name),
+                    );
+                  }).toList(),
+                  onChanged: (Syntax? newValue) {
+                    if (newValue != null) {
+                      setState(() {
+                        _selectedLanguage = newValue;
+                      });
+                    }
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Language',
+                    prefixIcon: PhosphorIcon(
+                      PhosphorIcons.translate(PhosphorIconsStyle.regular),
+                      color: appTheme.hintText,
+                    ),
+                  ),
+                ),
+              ],
               const Divider(height: 32),
               Wrap(
                 spacing: 8,
