@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_jot/features/notes/domain/exceptions/notes_exception.dart';
+import 'package:dev_jot/features/notes/domain/models/checklist_item.dart';
 import 'package:dev_jot/features/notes/domain/models/note.dart';
+import 'package:dev_jot/features/notes/domain/models/note_type.dart';
 import 'package:dev_jot/features/notes/domain/repositories/notes_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -26,9 +28,11 @@ class NotesRepositoryImpl implements NotesRepository {
   Future<void> addNote({
     required String title,
     required String content,
+    required NoteType noteType,
     List<String> tags = const [],
     bool isCode = false,
     String language = 'dart',
+    List<CheckListItem> checkListItems = const [],
   }) {
     return _getNotesCollection().add({
       'title': title,
@@ -37,6 +41,8 @@ class NotesRepositoryImpl implements NotesRepository {
       'tags': tags,
       'isCode': isCode,
       'language': language,
+      'noteType': noteType.toString(),
+      'checkListItems': checkListItems.map((item) => item.toJson()).toList(),
     });
   }
 
