@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dev_jot/features/app/utils/timestamp_converter.dart';
+import 'package:dev_jot/features/notes/domain/models/checklist_item.dart';
+import 'package:dev_jot/features/notes/domain/models/note_type.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -15,6 +17,8 @@ class Note extends Equatable {
     this.id = '',
     this.isCode = false,
     this.language = 'dart',
+    this.noteType = NoteType.text,
+    this.checkListItems = const [],
   });
 
   factory Note.fromJson(Map<String, dynamic> json) => _$NoteFromJson(json);
@@ -28,6 +32,8 @@ class Note extends Equatable {
   final List<String> tags;
   final bool isCode;
   final String language;
+  final NoteType noteType;
+  final List<CheckListItem> checkListItems;
 
   Map<String, dynamic> toJson() => _$NoteToJson(this);
 
@@ -39,6 +45,8 @@ class Note extends Equatable {
     List<String>? tags,
     bool? isCode,
     String? language,
+    NoteType? noteType,
+    List<CheckListItem>? checkListItems,
   }) {
     return Note(
       id: id ?? this.id,
@@ -48,6 +56,8 @@ class Note extends Equatable {
       tags: tags ?? this.tags,
       isCode: isCode ?? this.isCode,
       language: language ?? this.language,
+      noteType: noteType ?? this.noteType,
+      checkListItems: checkListItems ?? this.checkListItems,
     );
   }
 
@@ -60,5 +70,7 @@ class Note extends Equatable {
     tags,
     isCode,
     language,
+    noteType,
+    checkListItems,
   ];
 }
