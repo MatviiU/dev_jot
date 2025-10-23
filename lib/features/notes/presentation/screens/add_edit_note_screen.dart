@@ -1,4 +1,6 @@
+import 'package:dev_jot/features/notes/domain/models/checklist_item.dart';
 import 'package:dev_jot/features/notes/domain/models/note.dart';
+import 'package:dev_jot/features/notes/domain/models/note_type.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:dev_jot/features/notes/presentation/widgets/add_edit_note_widgets/add_edit_note_app_bar.dart';
 import 'package:dev_jot/features/notes/presentation/widgets/add_edit_note_widgets/add_edit_note_form.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_syntax_view/flutter_syntax_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 
 class AddEditNoteScreen extends StatefulWidget {
   const AddEditNoteScreen({super.key, this.note});
@@ -23,9 +26,13 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
   late final TextEditingController _contentController;
   late final TextEditingController _tagController;
   final _tags = <String>[];
-  var _isCode = false;
+  final _uuid = const Uuid();
+
+  //var _isCode = false;
   var _isPreviewing = false;
   var _selectedLanguage = Syntax.DART;
+  late NoteType _noteType;
+  var _checkListItems = <CheckListItem>[];
 
   @override
   void initState() {
@@ -35,10 +42,17 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
     _contentController = TextEditingController(text: note?.content);
     _tagController = TextEditingController();
 
-    if (widget.isEditing) {
-      _tags.addAll(note!.tags);
-      _isCode = note.isCode;
-      _selectedLanguage = _stringToSyntax(note.language);
+    if (widget.isEditing && note != null) {
+      _tags.addAll(note.tags);
+      if (note.noteType == NoteType.code) {
+        _selectedLanguage = _stringToSyntax(note.language!);
+      }
+      _noteType = note.noteType;
+      _checkListItems = note.checkListItems
+          .map((item) => item.copyWith())
+          .toList();
+    } else {
+      _noteType = NoteType.text;
     }
   }
 
@@ -51,13 +65,18 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
   }
 
   void _saveNote() {
+    final language = _noteType == NoteType.code
+        ? _selectedLanguage.name.toLowerCase()
+        : null;
+
     if (widget.isEditing) {
       final updateNote = widget.note!.copyWith(
         title: _titleController.text.trim(),
         content: _contentController.text.trim(),
         tags: _tags,
-        isCode: _isCode,
         language: _selectedLanguage.name.toLowerCase(),
+        noteType: _noteType,
+        checkListItems: _checkListItems,
       );
       context.read<NotesBloc>().add(UpdateNoteRequested(updateNote));
     } else {
@@ -66,8 +85,9 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
           title: _titleController.text.trim(),
           content: _contentController.text.trim(),
           tags: _tags,
-          isCode: _isCode,
-          language: _selectedLanguage.name.toLowerCase(),
+          language: language,
+          noteType: _noteType,
+          checkListItems: _checkListItems,
         ),
       );
     }
@@ -104,14 +124,44 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
     );
   }
 
-  void _onIsCodeChanged(bool newValue) {
-    setState(() => _isCode = newValue);
-  }
-
   void _onLanguageChanged(Syntax? newValue) {
     if (newValue != null) {
       setState(() => _selectedLanguage = newValue);
     }
+  }
+
+  void _onNoteTypeChanged(NoteType? newValue) {
+    if (newValue != null) {
+      setState(() {
+        _noteType = newValue;
+        _isPreviewing = false;
+      });
+    }
+  }
+
+  void _addCheckListItem() {
+    setState(() {
+      _checkListItems.add(
+        CheckListItem(id: _uuid.v4(), text: '', isChecked: false),
+      );
+    });
+  }
+
+  void _removeChecklistItem(String id) {
+    setState(() {
+      _checkListItems.removeWhere((item) => item.id == id);
+    });
+  }
+
+  void _updateChecklistItem(CheckListItem updatedItem) {
+    setState(() {
+      final index = _checkListItems.indexWhere(
+        (item) => item.id == updatedItem.id,
+      );
+      if (index != -1) {
+        _checkListItems[index] = updatedItem;
+      }
+    });
   }
 
   @override
@@ -128,13 +178,18 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
         contentController: _contentController,
         tagController: _tagController,
         isPreviewing: _isPreviewing,
-        isCode: _isCode,
         selectedLanguage: _selectedLanguage,
         tags: _tags,
-        onIsCodeChanged: _onIsCodeChanged,
+        //onIsCodeChanged: _onIsCodeChanged,
         onLanguageChanged: _onLanguageChanged,
         onTagAdded: _addTag,
         onTagRemoved: _removeTag,
+        onNoteTypeChanged: _onNoteTypeChanged,
+        noteType: _noteType,
+        checklistItems: _checkListItems,
+        onAddItem: _addCheckListItem,
+        onRemoveItem: _removeChecklistItem,
+        onItemChanged: _updateChecklistItem,
       ),
     );
   }

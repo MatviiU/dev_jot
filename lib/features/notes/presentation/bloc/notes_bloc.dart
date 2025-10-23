@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:dev_jot/features/notes/domain/models/checklist_item.dart';
 import 'package:dev_jot/features/notes/domain/models/note.dart';
+import 'package:dev_jot/features/notes/domain/models/note_type.dart';
 import 'package:dev_jot/features/notes/domain/repositories/notes_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +33,9 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     await _notesSubscription?.cancel();
     _notesSubscription = _notesRepository.getNotesStream().listen(
       (notes) => add(NotesUpdated(notes: notes)),
-      onError: (Object error) => add(NotesFailureEvent(error.toString())),
+      onError: (Object error) {
+        add(NotesFailureEvent(error.toString()));
+      },
     );
   }
 
@@ -66,8 +70,9 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         title: event.title,
         content: event.content,
         tags: event.tags,
-        isCode: event.isCode,
-        language: event.language,
+        language: event.language ?? '',
+        noteType: event.noteType,
+        checkListItems: event.checkListItems,
       );
     } catch (e) {
       emit(NotesFailure(e.toString()));
@@ -163,7 +168,10 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         final tagsMatch = note.tags.any(
           (tag) => tag.toLowerCase().contains(lowerCaseQuery),
         );
-        return titleMatch || contentMatch || tagsMatch;
+        final checklistMatch = note.checkListItems.any(
+          (item) => item.text.toLowerCase().contains(lowerCaseQuery),
+        );
+        return titleMatch || contentMatch || tagsMatch || checklistMatch;
       }).toList();
     }
     return filteredNotes;

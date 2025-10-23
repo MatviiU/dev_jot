@@ -1,4 +1,6 @@
+import 'package:dev_jot/features/app/widgets/gap.dart';
 import 'package:dev_jot/features/notes/domain/models/note.dart';
+import 'package:dev_jot/features/notes/domain/models/note_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_syntax_view/flutter_syntax_view.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -9,7 +11,10 @@ class NoteContentView extends StatelessWidget {
 
   final Note note;
 
-  Syntax _stringToSyntax(String language) {
+  Syntax _stringToSyntax(String? language) {
+    if (language == null) {
+      return Syntax.DART;
+    }
     return Syntax.values.firstWhere(
       (e) => e.name.toLowerCase() == language.toLowerCase(),
       orElse: () => Syntax.DART,
@@ -18,8 +23,9 @@ class NoteContentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (note.isCode) {
-      return SyntaxView(
+    return switch (note.noteType) {
+      NoteType.text => HtmlWidget(md.markdownToHtml(note.content)),
+      NoteType.code => SyntaxView(
         fontSize: 14,
         syntaxTheme: Theme.of(context).brightness == Brightness.dark
             ? SyntaxTheme.vscodeDark()
@@ -27,10 +33,30 @@ class NoteContentView extends StatelessWidget {
         code: note.content,
         syntax: _stringToSyntax(note.language),
         withLinesCount: true,
-      );
-    } else {
-      final htmlContent = md.markdownToHtml(note.content);
-      return HtmlWidget(htmlContent);
-    }
+      ),
+      NoteType.checkList => ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          final item = note.checkListItems[index];
+          return CheckboxListTile(
+            value: item.isChecked,
+            onChanged: null,
+            title: Text(
+              item.text,
+              style: TextStyle(
+                decoration: item.isChecked
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+              ),
+            ),
+          );
+        },
+        separatorBuilder: (context, index) {
+          return const Gap(height: 12);
+        },
+        itemCount: note.checkListItems.length,
+      ),
+    };
   }
 }

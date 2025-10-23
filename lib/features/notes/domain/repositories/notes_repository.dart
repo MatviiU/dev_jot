@@ -10,8 +10,8 @@ abstract interface class NotesRepository {
     required String content,
     required NoteType noteType,
     List<String> tags = const [],
-    bool isCode = false,
-    String language = 'dart',
+    //bool isCode = false,
+    String? language,
     List<CheckListItem> checkListItems = const [],
   });
 

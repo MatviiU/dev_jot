@@ -23,18 +23,27 @@ final class AddNoteRequested extends NotesEvent {
     required this.title,
     required this.content,
     this.tags = const [],
-    this.isCode = false,
-    this.language = 'dart',
+    this.language,
+    this.noteType = NoteType.text,
+    this.checkListItems = const [],
   });
 
   final String title;
   final String content;
   final List<String> tags;
-  final bool isCode;
-  final String language;
+  final String? language;
+  final NoteType noteType;
+  final List<CheckListItem> checkListItems;
 
   @override
-  List<Object?> get props => [title, content, tags, isCode, language];
+  List<Object?> get props => [
+    title,
+    content,
+    tags,
+    language,
+    noteType,
+    checkListItems,
+  ];
 }
 
 final class UpdateNoteRequested extends NotesEvent {

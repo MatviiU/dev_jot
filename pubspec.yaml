@@ -25,6 +25,7 @@ dependencies:
   phosphor_flutter: ^2.1.0
   google_fonts: ^6.3.1
   flutter_widget_from_html: ^0.17.1
+  uuid: ^4.5.1
 
   cupertino_icons: ^1.0.8
   markdown: ^7.3.0

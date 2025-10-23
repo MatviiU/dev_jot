@@ -30,20 +30,23 @@ class NotesRepositoryImpl implements NotesRepository {
     required String content,
     required NoteType noteType,
     List<String> tags = const [],
-    bool isCode = false,
-    String language = 'dart',
+    //bool isCode = false,
+    String? language,
     List<CheckListItem> checkListItems = const [],
   }) {
-    return _getNotesCollection().add({
+    final data = {
       'title': title,
       'content': content,
       'createdAt': FieldValue.serverTimestamp(),
       'tags': tags,
-      'isCode': isCode,
-      'language': language,
-      'noteType': noteType.toString(),
+      'noteType': noteType.name,
       'checkListItems': checkListItems.map((item) => item.toJson()).toList(),
-    });
+    };
+    if (noteType == NoteType.code && language != null) {
+      data['language'] = language;
+    }
+    print('data: $data');
+    return _getNotesCollection().add(data);
   }
 
   @override
@@ -56,12 +59,19 @@ class NotesRepositoryImpl implements NotesRepository {
 
   @override
   Stream<List<Note>> getNotesStream() {
-    return _getNotesCollection().snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        return Note.fromJson(data).copyWith(id: doc.id);
-      }).toList();
-    });
+    return _getNotesCollection()
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          try {
+            return snapshot.docs.map((doc) {
+              final data = doc.data();
+              return Note.fromJson(data).copyWith(id: doc.id);
+            }).toList();
+          } catch (e) {
+            return [];
+          }
+        });
   }
 
   @override

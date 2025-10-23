@@ -7,17 +7,16 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'note.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Note extends Equatable {
   const Note({
     required this.title,
-    required this.content,
+    required this.noteType,
+    this.content = '',
     this.createdAt,
     this.tags = const [],
     this.id = '',
-    this.isCode = false,
-    this.language = 'dart',
-    this.noteType = NoteType.text,
+    this.language,
     this.checkListItems = const [],
   });
 
@@ -30,8 +29,7 @@ class Note extends Equatable {
   @TimestampConverter()
   final DateTime? createdAt;
   final List<String> tags;
-  final bool isCode;
-  final String language;
+  final String? language;
   final NoteType noteType;
   final List<CheckListItem> checkListItems;
 
@@ -43,7 +41,6 @@ class Note extends Equatable {
     String? content,
     DateTime? createdAt,
     List<String>? tags,
-    bool? isCode,
     String? language,
     NoteType? noteType,
     List<CheckListItem>? checkListItems,
@@ -54,7 +51,6 @@ class Note extends Equatable {
       content: content ?? this.content,
       createdAt: createdAt ?? this.createdAt,
       tags: tags ?? this.tags,
-      isCode: isCode ?? this.isCode,
       language: language ?? this.language,
       noteType: noteType ?? this.noteType,
       checkListItems: checkListItems ?? this.checkListItems,
@@ -68,7 +64,6 @@ class Note extends Equatable {
     content,
     createdAt,
     tags,
-    isCode,
     language,
     noteType,
     checkListItems,

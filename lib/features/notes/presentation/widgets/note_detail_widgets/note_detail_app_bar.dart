@@ -1,6 +1,7 @@
 import 'package:dev_jot/core/theme/app_theme.dart';
 import 'package:dev_jot/features/app/screen_names.dart';
 import 'package:dev_jot/features/notes/domain/models/note.dart';
+import 'package:dev_jot/features/notes/domain/models/note_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +11,43 @@ class NoteDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
   const NoteDetailAppBar({required this.note, super.key});
 
   final Note note;
+
+  Widget _buildCopyAction(BuildContext context) {
+    final appTheme = Theme.of(context).extension<AppColorsExtension>()!;
+    final textTheme = Theme.of(context).textTheme;
+
+    final canCopy = note.noteType == NoteType.checkList
+        ? note.checkListItems.isNotEmpty
+        : note.content.isNotEmpty;
+    if (!canCopy) return const SizedBox.shrink();
+    return IconButton(
+      onPressed: () {
+        final String textToCopy;
+        switch (note.noteType) {
+          case NoteType.text:
+          case NoteType.code:
+            textToCopy = note.content;
+          case NoteType.checkList:
+            textToCopy = note.checkListItems
+                .map((item) {
+                  return '${item.isChecked ? '[x]' : '[ ]'} ${item.text}';
+                })
+                .join('\n');
+        }
+        Clipboard.setData(ClipboardData(text: textToCopy));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: appTheme.surface,
+            content: Text(
+              'Copied to clipboard',
+              style: textTheme.bodyMedium?.copyWith(color: appTheme.onSurface),
+            ),
+          ),
+        );
+      },
+      icon: PhosphorIcon(PhosphorIcons.copy()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,24 +73,7 @@ class NoteDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
               context.pushNamed(ScreenNames.addEditNote, extra: note),
           icon: PhosphorIcon(PhosphorIcons.pencil()),
         ),
-        if (note.isCode)
-          IconButton(
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: note.content));
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: appTheme.surface,
-                  content: Text(
-                    'Copied to clipboard',
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: appTheme.onSurface,
-                    ),
-                  ),
-                ),
-              );
-            },
-            icon: PhosphorIcon(PhosphorIcons.copy()),
-          ),
+        _buildCopyAction(context),
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'package:dev_jot/core/theme/app_theme.dart';
 import 'package:dev_jot/features/app/screen_names.dart';
 import 'package:dev_jot/features/app/widgets/gap.dart';
 import 'package:dev_jot/features/notes/domain/models/note.dart';
+import 'package:dev_jot/features/notes/domain/models/note_type.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,6 +76,70 @@ class NoteListItem extends StatelessWidget {
     );
   }
 
+  Widget _buildNoteIcon(AppColorsExtension appTheme) {
+    return switch (note.noteType) {
+      NoteType.code => PhosphorIcon(
+        PhosphorIcons.code(),
+        color: appTheme.onSurface,
+      ),
+      NoteType.checkList => PhosphorIcon(
+        PhosphorIcons.listChecks(),
+        color: appTheme.onSurface,
+      ),
+      NoteType.text => const SizedBox.shrink(),
+    };
+  }
+
+  Widget _buildNoteContentPreview(
+    BuildContext context,
+    AppColorsExtension appTheme,
+  ) {
+    final textTheme = Theme.of(context).textTheme;
+    return switch (note.noteType) {
+      NoteType.text || NoteType.code => Text(
+        note.content,
+        style: textTheme.bodyMedium?.copyWith(color: appTheme.onSurface),
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+      ),
+      NoteType.checkList => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: note.checkListItems.take(3).map((item) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Row(
+              children: [
+                PhosphorIcon(
+                  item.isChecked
+                      ? PhosphorIcons.checkSquare(PhosphorIconsStyle.fill)
+                      : PhosphorIcons.square(PhosphorIconsStyle.light),
+                  color: appTheme.hintText,
+                  size: 18,
+                ),
+                const Gap(width: 8),
+                Expanded(
+                  child: Text(
+                    item.text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: appTheme.onSurface,
+                      decoration: item.isChecked
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                      decorationColor: appTheme.hintText,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final appTheme = Theme.of(context).extension<AppColorsExtension>()!;
@@ -119,10 +184,8 @@ class NoteListItem extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  note.isCode
-                      ? PhosphorIcon(PhosphorIcons.code())
-                      : const SizedBox.shrink(),
-                  const Gap(width: 8),
+                  _buildNoteIcon(appTheme),
+                  if (note.noteType != NoteType.text) const Gap(width: 8),
                   Text(
                     note.title,
                     style: textTheme.titleLarge?.copyWith(
@@ -134,19 +197,21 @@ class NoteListItem extends StatelessWidget {
                 ],
               ),
               const Gap(height: 8),
-              Text(
-                note.content,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: appTheme.onSurface,
-                ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
+              _buildNoteContentPreview(context, appTheme),
+              if (note.content.isNotEmpty || note.checkListItems.isNotEmpty)
+                const Gap(height: 12),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 children: note.tags.map((tag) {
-                  return Chip(label: Text(tag));
+                  return Chip(
+                    label: Text(tag),
+                    backgroundColor: appTheme.primary?.withValues(alpha: 0.1),
+                    labelStyle: textTheme.labelMedium?.copyWith(
+                      color: appTheme.primary,
+                    ),
+                    side: BorderSide.none,
+                  );
                 }).toList(),
               ),
             ],
