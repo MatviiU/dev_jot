@@ -30,7 +30,6 @@ class NotesRepositoryImpl implements NotesRepository {
     required String content,
     required NoteType noteType,
     List<String> tags = const [],
-    //bool isCode = false,
     String? language,
     List<CheckListItem> checkListItems = const [],
   }) {
@@ -45,7 +44,6 @@ class NotesRepositoryImpl implements NotesRepository {
     if (noteType == NoteType.code && language != null) {
       data['language'] = language;
     }
-    print('data: $data');
     return _getNotesCollection().add(data);
   }
 

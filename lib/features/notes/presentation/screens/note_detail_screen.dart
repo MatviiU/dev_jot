@@ -38,7 +38,21 @@ class NoteDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: NoteContentView(note: currentNote),
+          child: NoteContentView(
+            note: currentNote,
+            onItemChanged: (updatedItem) {
+              final index = currentNote.checkListItems.indexWhere(
+                (item) => item.id == updatedItem.id,
+              );
+              if (index == -1) return;
+              final newItems = [...currentNote.checkListItems];
+              newItems[index] = updatedItem;
+              final updatedNote = currentNote.copyWith(
+                checkListItems: newItems,
+              );
+              context.read<NotesBloc>().add(UpdateNoteRequested(updatedNote));
+            },
+          ),
         ),
       ),
     );

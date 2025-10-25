@@ -15,11 +15,8 @@ class AddEditNoteForm extends StatelessWidget {
     required this.titleController,
     required this.contentController,
     required this.tagController,
-    required this.isPreviewing,
-    //required this.isCode,
     required this.selectedLanguage,
     required this.tags,
-    //required this.onIsCodeChanged,
     required this.onLanguageChanged,
     required this.onTagAdded,
     required this.onTagRemoved,
@@ -35,13 +32,10 @@ class AddEditNoteForm extends StatelessWidget {
   final TextEditingController titleController;
   final TextEditingController contentController;
   final TextEditingController tagController;
-  final bool isPreviewing;
 
-  //final bool isCode;
   final Syntax selectedLanguage;
   final List<String> tags;
 
-  //final ValueChanged<bool> onIsCodeChanged;
   final ValueChanged<Syntax?> onLanguageChanged;
   final ValueChanged<String> onTagAdded;
   final ValueChanged<String> onTagRemoved;
@@ -55,7 +49,6 @@ class AddEditNoteForm extends StatelessWidget {
   Widget _buildEditor() {
     return switch (noteType) {
       NoteType.text => NoteContentEditor(
-        isPreviewing: isPreviewing,
         controller: contentController,
         codeSyntax: selectedLanguage,
         isCode: false,
@@ -64,12 +57,10 @@ class AddEditNoteForm extends StatelessWidget {
         children: [
           CodeSettings(
             selectedLanguage: selectedLanguage,
-            //onIsCodeChanged: onIsCodeChanged,
             onSelectedLanguageChanged: onLanguageChanged,
           ),
           const Gap(height: 16),
           NoteContentEditor(
-            isPreviewing: isPreviewing,
             controller: contentController,
             codeSyntax: selectedLanguage,
             isCode: true,

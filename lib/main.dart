@@ -3,6 +3,7 @@ import 'package:dev_jot/core/navigation/app_router.dart';
 import 'package:dev_jot/core/theme/app_theme.dart';
 import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
+import 'package:dev_jot/features/notes/presentation/cubits/add_edit_note_cubit/add_edit_note_cubit.dart';
 import 'package:dev_jot/features/settings/presentation/cubit/theme_cubit.dart';
 import 'package:dev_jot/features/tip_of_the_day/presentation/cubit/tip_cubit.dart';
 import 'package:dev_jot/firebase_options.dart';
@@ -25,6 +26,7 @@ void main() async {
         BlocProvider(create: (context) => di.getIt<NotesBloc>()),
         BlocProvider(create: (context) => di.getIt<TipCubit>()),
         BlocProvider(create: (context) => di.getIt<ThemeCubit>()),
+        BlocProvider(create: (context) => di.getIt<AddEditNoteCubit>()),
       ],
       child: const MyApp(),
     ),
