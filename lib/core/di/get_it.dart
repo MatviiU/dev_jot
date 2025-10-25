@@ -5,6 +5,7 @@ import 'package:dev_jot/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dev_jot/features/notes/data/repositories/notes_repository_impl.dart';
 import 'package:dev_jot/features/notes/domain/repositories/notes_repository.dart';
 import 'package:dev_jot/features/notes/presentation/bloc/notes_bloc.dart';
+import 'package:dev_jot/features/notes/presentation/cubits/add_edit_note_cubit/add_edit_note_cubit.dart';
 import 'package:dev_jot/features/settings/data/repositories/settings_repository_impl.dart';
 import 'package:dev_jot/features/settings/domain/repositories/settings_repository.dart';
 import 'package:dev_jot/features/settings/presentation/cubit/theme_cubit.dart';
@@ -54,5 +55,6 @@ void setupDependencies() {
     )
     ..registerLazySingleton<ThemeCubit>(
       () => ThemeCubit(settingsRepository: getIt<SettingsRepository>()),
-    );
+    )
+    ..registerFactory<AddEditNoteCubit>(AddEditNoteCubit.new);
 }

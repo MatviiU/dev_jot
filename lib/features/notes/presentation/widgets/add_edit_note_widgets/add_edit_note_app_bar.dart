@@ -6,15 +6,12 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 class AddEditNoteAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AddEditNoteAppBar({
     required this.isEditing,
-    required this.isPreviewing,
-    required this.onTogglePreview,
     required this.onSave,
     super.key,
   });
 
   final bool isEditing;
-  final bool isPreviewing;
-  final VoidCallback onTogglePreview;
+
   final VoidCallback onSave;
 
   @override
@@ -36,15 +33,6 @@ class AddEditNoteAppBar extends StatelessWidget implements PreferredSizeWidget {
         style: textTheme.titleLarge?.copyWith(color: appTheme.onBackground),
       ),
       actions: [
-        IconButton(
-          onPressed: onTogglePreview,
-          icon: PhosphorIcon(
-            isPreviewing
-                ? PhosphorIcons.eyeSlash(PhosphorIconsStyle.regular)
-                : PhosphorIcons.eye(PhosphorIconsStyle.regular),
-            color: appTheme.onBackground,
-          ),
-        ),
         TextButton(
           onPressed: onSave,
           child: Text(
